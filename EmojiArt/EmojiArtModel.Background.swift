@@ -9,7 +9,7 @@ import Foundation
 
 extension EmojiArtModel {
     
-    enum Background: Equatable {
+    enum Background: Equatable, Codable { // there is no error after adding Codable to background ( other than in the demo ) => a lot of code does not seem to be necessary; obviously swift can handle enums with associated data as "codable"
         case blank
         case url(URL)
         case imageData(Data)
