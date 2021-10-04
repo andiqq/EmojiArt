@@ -29,18 +29,18 @@ struct EmojiArtDocumentView: View {
                         .scaleEffect(zoomScale)
                         .position(convertFromEmojiCoordinates((0,0), in: geometry))
                 )
-                .gesture(doubleTapToZoom(in: geometry.size))
+                    .gesture(doubleTapToZoom(in: geometry.size))
                 if document.backgroundImageFetchStatus == .fetching {
                     ProgressView()
                         .scaleEffect(2)
                 } else {
-                ForEach(document.emojis) { emoji in
-                    Text(emoji.text)
-                        .font(.system(size: fontSize(for:emoji)))
-                        .scaleEffect(zoomScale)
-                        .position(position(for: emoji, in: geometry))
+                    ForEach(document.emojis) { emoji in
+                        Text(emoji.text)
+                            .font(.system(size: fontSize(for:emoji)))
+                            .scaleEffect(zoomScale)
+                            .position(position(for: emoji, in: geometry))
+                    }
                 }
-            }
             }
             .clipped()
             .onDrop(of: [.plainText,.url,.image], isTargeted: nil) { providers, location in
@@ -57,6 +57,9 @@ struct EmojiArtDocumentView: View {
                 default:
                     break
                 }
+            }
+            .onReceive(document.$backgroundImage) { image in
+                zoomToFit(image, in: geometry.size)
             }
         }
     }
@@ -167,7 +170,7 @@ struct EmojiArtDocumentView: View {
                 }
             }
     }
-        
+    
     private func zoomToFit (_ image: UIImage?, in size: CGSize) {
         if let image = image, image.size.width > 0, image.size.height > 0, size.height > 0 {
             let hZoom = size.width / image.size.width
